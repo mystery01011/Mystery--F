@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي معرفة الشخصية 🎯</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #111827;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            border: 1px solid #1f2937;
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #38bdf8;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        p {
+            color: #9ca3af;
+            font-size: 15px;
+        }
+        .form-group {
+            margin: 25px 0;
+            text-align: right;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 2px solid #1f2937;
+            background-color: #0b0f19;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #38bdf8;
+        }
+        .btn {
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #4f46e5;
+        }
+        .question-card, .result-card {
+            display: none;
+        }
+        .progress-bar {
+            font-size: 14px;
+            color: #818cf8;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background-color: #1e1b4b;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .question-title {
+            font-size: 19px;
+            margin-bottom: 25px;
+            color: #f3f4f6;
+            line-height: 1.6;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option-btn {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            border: 2px solid #374151;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: right;
+            line-height: 1.4;
+        }
+        .option-btn:hover {
+            border-color: #38bdf8;
+            background-color: #111827;
+            color: #38bdf8;
+        }
+        .score-text {
+            font-size: 22px;
+            margin: 25px 0;
+            color: #38bdf8;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- شاشة إدخال الاسم -->
+    <div id="start-card">
+        <h1>تحدي معرفة الشخصية 🎯</h1>
+        <p>يا هلا! اكتب اسمك الكريم أولاً للبدء بالاختبار:</p>
+        <div class="form-group">
+            <label for="username">الاسم:</label>
+            <input type="text" id="username" placeholder="أدخل اسمك هنا..." required>
+        </div>
+        <button class="btn" onclick="startQuiz()">ابدأ الاختبار</button>
+    </div>
+
+    <!-- شاشة الأسئلة -->
+    <div id="quiz-card" class="question-card">
+        <div id="progress" class="progress-bar">السؤال 1 من 20</div>
+        <h2 id="question-text" class="question-title"></h2>
+        <div class="options">
+            <button class="option-btn" id="opt0" onclick="checkAnswer(0)"></button>
+            <button class="option-btn" id="opt1" onclick="checkAnswer(1)"></button>
+        </div>
+    </div>
+
+    <!-- شاشة النتيجة -->
+    <div id="result-card" class="result-card">
+        <h1>النتيجة النهائية 🎉</h1>
+        <div class="score-text" id="result-text"></div>
+        <button class="btn" onclick="restartQuiz()">إعادة الاختبار</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { question: "1. أي الخطوط أرتاح لكتابته أكثر وأنا أخط بالدفتر؟", options: ["خط الرقعة بحبر أسود", "الخط الديواني الملتوي"], correctIndex: 0 },
+        { question: "2. وش الرياضة أو الفن القتالي اللي أتدرب عليه وأفضله؟", options: ["الكراتيه والجودو", "الملاكمة والتايلندية (Muay Thai)"], correctIndex: 1 },
+        { question: "3. لما أجلس أشتغل على الأندرويد والجوال، وش اللي أهوايه؟", options: ["التعديل والروت وصلاحيات النظام", "تحميل العاب وتطبيقات جاهزة"], correctIndex: 0 },
+        { question: "4. وش أمنيتي بالتصميم والبناء اللي دايماً أخطط له؟", options: ["شراء بيت جاهز ومؤثث", "تصميم بيت معماري متكامل بنفسي"], correctIndex: 1 },
+        { question: "5. وش نوع الشيلات والغناء اللي يستهويني وأسمعه؟", options: ["الشيلات والقصايد", "الأغاني الحديثة والموسيقى"], correctIndex: 0 },
+        { question: "6. وش المواضيع الكونية اللي أقرأ عنها وأتابعها بكثرة؟", options: ["الطقس وحركة السحب والأمطار", "الفلك والثقوب السوداء وفيزياء الفضاء"], correctIndex: 1 },
+        { question: "7. بألعاب الفيديو والتسلية، وش الأحب لقلبي؟", options: ["البناء والتصاميم في ماينكرافت ولعب كورة", "ألعاب السيارات والسباقات السريعة"], correctIndex: 0 },
+        { question: "8. أي أسلوب بالحديث والتعبير أفضله مع الناس؟", options: ["كتابة المقالات والروايات الطويلة", "كتابة الشعر والقصايد"], correctIndex: 1 },
+        { question: "9. وش الطريقة اللي أفرغ فيها طافتي وتفكيري؟", options: ["الكتابة بالدفتر بالخط اليدوي", "التصفح المباشر بالجوال"], correctIndex: 0 },
+        { question: "10. لما أطلب إكسسوارات أو أغراض للجوال والتقنية، وش أرتب؟", options: ["غطاء حماية وكفرات ملوّنة", "سماعات بلوتوث وساعات ذكية للتعديل"], correctIndex: 1 },
+        { question: "11. وش أكثر شيء يهمني لما أصمم واجهات أو بطاقات؟", options: ["دقة الألوان والتعديل باللايت روم", "إضافة ملصقات وأشكال كثيرة"], correctIndex: 0 },
+        { question: "12. وش الدور القيادي اللي مستلم وظيفتة بالمدرسة؟", options: ["عضو عادي بفرق النشاط", "مشرف نظام لجنة الانضباط الطلابية"], correctIndex: 1 },
+        { question: "13. وش القلم والحبر اللي ما أغيره لما أكتب قصايدي؟", options: ["قلم يوني بول بحبر أسود", "قلم جاف أزرق عادي"], correctIndex: 0 },
+        { question: "14. أي المهارات البدنية أركز على تقويتها أثناء التدريب؟", options: ["الجري لمسافات طويلة جداً", "قوة قبضة اليد والدفاع عن النفس"], correctIndex: 1 },
+        { question: "15. شلون أفضّل يكون مكتبي أو أدوات كتابتي؟", options: ["مرتبة ومحددة بدفتر A4 مخصص", "أوراق مبعثرة بأي مكان"], correctIndex: 0 },
+        { question: "16. وش النظرية العلمية عن الحركة اللي تشدني؟", options: ["علوم قواعد التغذية والرجيم", "ميكانيكا وحركة الجسم والحركة الذاتية"], correctIndex: 1 },
+        { question: "17. وش التقنية الذكية اللي أستخدمها بالتبادل والمشاركات؟", options: ["بطاقات الاتصال الذكية NFC", "الرموز التقليدية وباركود المطبوع"], correctIndex: 0 },
+        { question: "18. وش نوع التعديل اللي أفضله بألعاب بلايستيشن وقراند؟", options: ["اللعب العادي بدون أي إضافات", "إضافة مودات وتطويرات مخصصة"], correctIndex: 1 },
+        { question: "19. شلون أتعامل مع النظام والترتيب بحياتي اليومية؟", options: ["أحب الانضباط والترتيب الواضح", "العفوية والتأجيل"], correctIndex: 0 },
+        { question: "20. وش القيمة الأهم عندي لما أكتب إهداء أو رسالة؟", options: ["تكون كلام عام ومردد", "تكون نابعة من القلب وصادقة"], correctIndex: 1 }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let userName = "";
+
+    function startQuiz() {
+        const nameInput = document.getElementById("username").value.trim();
+        if (nameInput === "") {
+            alert("يرجى كتابة اسمك قبل البدء!");
+            return;
+        }
+        userName = nameInput;
+        document.getElementById("start-card").style.display = "none";
+        document.getElementById("quiz-card").style.display = "block";
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[currentQuestion];
+        document.getElementById("progress").innerText = `السؤال ${currentQuestion + 1} من ${questions.length}`;
+        document.getElementById("question-text").innerText = q.question;
+        document.getElementById("opt0").innerText = q.options[0];
+        document.getElementById("opt1").innerText = q.options[1];
+    }
+
+    function checkAnswer(index) {
+        if (index === questions[currentQuestion].correctIndex) {
+            score++;
+        }
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById("quiz-card").style.display = "none";
+        document.getElementById("result-card").style.display = "block";
+        
+        let percentage = Math.round((score / questions.length) * 100);
+        let message = "";
+        
+        if (score >= 18) {
+            message = `ما شاء الله يا ${userName}! تعرفني عز المعرفة ونسبتك ${percentage}%! 🔥`;
+        } else if (score >= 12) {
+            message = `يا أهلاً يا ${userName}، درجتك ${score} من ${questions.length} (${percentage}%). تعرفني زين بس فيه تفاصيل فاتت عليك! 👍`;
+        } else {
+            message = `يا ${userName}، درجتك ${score} من ${questions.length} (${percentage}%). تحتاجا لنتعرف على بعض أكثر! 😂`;
+        }
+        
+        document.getElementById("result-text").innerText = message;
+    }
+
+    function restartQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        document.getElementById("result-card").style.display = "none";
+        document.getElementById("start-card").style.display = "block";
+        document.getElementById("username").value = "";
+    }
+</script>
+
+</body>
+</html>
